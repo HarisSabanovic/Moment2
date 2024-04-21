@@ -11,9 +11,9 @@ app.use(express.static(__dirname));
 //skapar anslutning till databas
 const connection = mysql.createConnection({
     host: "localhost",
-    user: "moment2_db",
-    password: "TreesandWood",
-    database: "moment2_db"
+    user: "root",
+    password: "",
+    database: "cv_database"
 });
 
 connection.connect((err) => {
@@ -25,8 +25,9 @@ connection.connect((err) => {
     console.log("connected to mysql");
 })
 
-//Routes
 
+
+//Routes
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
@@ -36,19 +37,35 @@ app.get("/api", (req, res) => {
 })
 
 app.get("/api/workers", (req, res) => {
-    res.json({message: "Hämtar arbetare :)"})
+    
+    connection.query("SELECT * FROM workexperience", (err, results) => {
+        if(err) {
+            res.status(500).json({error: "Something went wrong " + err});
+            return;
+        }
+
+        console.log(results);
+
+        if(results === 0) {
+            res.status(404).json({message: "Nothing found"});
+        }
+
+        else {
+            res.json(results)
+        }
+    })
 })
 
 app.post("/api/workers", (req, res) => {
-    res.json({message: "Lägg till arbetare :)"})
+    res.json({message: "Lägg till arbete :)"})
 })
 
 app.put("/api/workers/:id", (req, res) => {
-    res.json({message: "Arbetare uppdaterad " + req.params.id})
+    res.json({message: "Arbete uppdaterad " + req.params.id})
 })
 
 app.delete("/api/workers/:id", (req, res) => {
-    res.json({message: "Arbetare raderad " + req.params.id})
+    res.json({message: "Arbete raderad " + req.params.id})
 })
 
 app.listen(port, () => {
