@@ -6,6 +6,7 @@ const mysql = require("mysql");
 
 app.use(cors());
 app.use(express.static(__dirname));
+app.use(express.json());
 
 
 //skapar anslutning till databas
@@ -65,8 +66,19 @@ app.put("/api/workers/:id", (req, res) => {
 })
 
 app.delete("/api/workers/:id", (req, res) => {
-    res.json({message: "Arbete raderad " + req.params.id})
-})
+    const jobID = req.params.id;
+
+    connection.query("DELETE FROM workexperience WHERE id = ?", [jobID], 
+     
+     (err, result) => {
+        if (err) {
+            console.error("Can not delete job: " + err);
+            res.status(500).json({error: "failed to delete job"});
+        } else {
+            res.json({message: "Job deleted"});
+        }
+     });
+});
 
 app.listen(port, () => {
     console.log("Server is running on port: " + port);
