@@ -1,5 +1,7 @@
 
-getJobs();
+window.onload = function() {
+    getJobs();
+};
 
 async function getJobs(){
    try {
@@ -26,28 +28,50 @@ function displayData(data) {
 
 
         const companyNameEl = document.createElement("h3");
-        companyNameEl.innerHTML = `${job.companyname}`;
-
-        const jobTitleEl = document.createElement("p");
-        jobTitleEl.innerHTML = `${job.jobtitle}`;
+        companyNameEl.innerHTML = `${job.jobtitle} - ${job.companyname}`;
 
         const locationEl = document.createElement("p");
         locationEl.innerHTML = `${job.location}`;
 
         const dateEl = document.createElement("p");
-        dateEl.innerHTML = `${job.startdate} - ${job.enddate}`;
+        dateEl.innerHTML = `From ${job.startdate.split("T")[0]} to ${job.enddate.split("T")[0]}`;
 
         const infoEl = document.createElement("p");
         infoEl.innerHTML = `${job.description}`;
 
+        const deleteBtn = document.createElement("a");
+        deleteBtn.href = "#"
+        deleteBtn.innerHTML = "Radera";
+
+        deleteBtn.addEventListener("click", function() {
+            event.preventDefault();
+            deleteJob(job.id);
+        })
 
         jobDivEl.appendChild(companyNameEl);
-        jobDivEl.appendChild(jobTitleEl);
         jobDivEl.appendChild(locationEl);
         jobDivEl.appendChild(dateEl);
         jobDivEl.appendChild(infoEl);
+        jobDivEl.appendChild(deleteBtn);
 
         containerEl.appendChild(jobDivEl);
 
     })
+}
+
+async function deleteJob(jobId) {
+    try {
+        const response = await fetch(`/api/workers/${jobId}`, {
+            method: "DELETE"
+        });
+
+        if(response.ok) {
+            console.log("Deleted succesfully");
+            getJobs();
+        } else {
+            console.error("Kan inte radera")
+        }
+    } catch {
+        console.error("could not delete job")
+    }
 }
