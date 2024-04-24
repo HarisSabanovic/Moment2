@@ -3,6 +3,7 @@ window.onload = function() {
     getJobs();
 };
 
+//hämtar jobb
 async function getJobs(){
    try {
      const respone = await fetch("/api/workers");
@@ -15,6 +16,7 @@ async function getJobs(){
 }
 
 
+//visar varje jobb
 function displayData(data) {
 
     const containerEl = document.getElementById("data-container");
@@ -39,6 +41,7 @@ function displayData(data) {
         const infoEl = document.createElement("p");
         infoEl.innerHTML = `${job.description}`;
 
+        //radera knapp
         const deleteBtn = document.createElement("a");
         deleteBtn.href = "#"
         deleteBtn.innerHTML = "Radera";
@@ -46,7 +49,18 @@ function displayData(data) {
         deleteBtn.addEventListener("click", function() {
             event.preventDefault();
             deleteJob(job.id);
-        })
+        });
+
+
+        //updatera knapp
+        const updateBtn = document.createElement("a");
+        deleteBtn.href = "#"
+        deleteBtn.innerHTML = "Ändra";
+
+        updateBtn.addEventListener("click", function() {
+            event.preventDefault();
+            updateJob(job.id);
+        });
 
         jobDivEl.appendChild(companyNameEl);
         jobDivEl.appendChild(locationEl);
@@ -58,6 +72,44 @@ function displayData(data) {
 
     })
 }
+
+//radera funktion
+document.addEventListener("DOMContentLoaded", function() {
+    let formEl = document.getElementById("workForm");
+    formEl.addEventListener("submit", formPost);
+
+    async function formPost(event) {
+        event.preventDefault();
+
+        const form = event.target;
+
+        const formData = {
+            companyname: form.companyname.value,
+            jobtitle: form.jobtitle.value,
+            location: form.location.value,
+            startdate: form.startdate.value,
+            enddate: form.enddate.value,
+            description: form.description.value
+        };
+
+        try {
+            const response = await fetch("/api/workers", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to add job");
+            }
+            
+        } catch (error) {
+            console.error("Error adding job:", error);
+        }
+    }
+});
 
 async function deleteJob(jobId) {
     try {
