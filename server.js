@@ -58,8 +58,25 @@ app.get("/api/workers", (req, res) => {
 })
 
 app.post("/api/workers", (req, res) => {
-    res.json({message: "Lägg till arbete :)"})
-})
+
+    let companyname = req.body.companyname;
+    let jobtitle = req.body.jobtitle;
+    let location = req.body.location;
+    let startdate = req.body.startdate;
+    let enddate = req.body.enddate;
+    let description = req.body.description;
+
+    connection.query("INSERT INTO workexperience (companyname, jobtitle, location, startdate, enddate, description) VALUES (?, ?, ?, ?, ?, ?)", [companyname, jobtitle, location, startdate, enddate, description], 
+       
+       (err, result) => {
+        if(err) {
+            console.error("Could not add work: " + err);
+            res.status(500).json({error: "failed to add job"});
+        } else {
+            console.log("Job added");
+        }
+       });
+});
 
 app.put("/api/workers/:id", (req, res) => {
     res.json({message: "Arbete uppdaterad " + req.params.id})
