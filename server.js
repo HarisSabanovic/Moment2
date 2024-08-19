@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const bodyparser = require("body-parser");
 const port = 3000;
 const cors = require("cors");
 const mysql = require("mysql");
@@ -7,13 +8,13 @@ const mysql = require("mysql");
 app.use(cors());
 app.use(express.static(__dirname));
 app.use(express.json());
-
+app.use(bodyparser.urlencoded({ extended: true }));
 
 //skapar anslutning till databas
 const connection = mysql.createConnection({
     host: "localhost",
-    user: "root",
-    password: "",
+    user: "cv_database",
+    password: "Banja2020",
     database: "cv_database"
 });
 
@@ -25,6 +26,7 @@ connection.connect((err) => {
 
     console.log("connected to mysql");
 })
+
 
 
 
@@ -78,9 +80,29 @@ app.post("/api/workers", (req, res) => {
        });
 });
 
-app.put("/api/workers/:id", (req, res) => {
-    res.json({message: "Arbete uppdaterad " + req.params.id})
-})
+
+app.put('/api/workers/:id', (req, res) => {
+    const jobID = req.params.jobID;
+    const { jobtitle, location, startdate, enddate, description } = req.body;
+  
+    // SQL-förfrågan för att uppdatera jobbet baserat på företagsnamn
+    const sql = `UPDATE jobs SET jobtitle=?, location=?, startdate=?, enddate=?, description=? WHERE jobId=?`;
+  
+    // Utför SQL-förfrågan
+    connection.query(sql, [jobtitle, location, startdate, enddate, description, jobID], (error, results) => {
+      if (error) {
+        console.error('Kunde inte uppdatera jobbet: ' + error.message);
+        return res.status(500).json({ message: 'Kunde inte uppdatera jobbet' });
+      }
+  
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: 'Inget jobb hittades för det angivna företagsnamnet' });
+      }
+  
+      return res.status(200).json({ message: 'Jobbet har uppdaterats' });
+    });
+  });
+  
 
 app.delete("/api/workers/:id", (req, res) => {
     const jobID = req.params.id;
