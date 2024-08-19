@@ -1,4 +1,5 @@
 
+
 window.onload = function() {
     getJobs();
 };
@@ -36,10 +37,10 @@ function displayData(data) {
         locationEl.innerHTML = `${job.location}`;
 
         const dateEl = document.createElement("p");
-        dateEl.innerHTML = `From ${job.startdate.split("T")[0]} to ${job.enddate.split("T")[0]}`;
+        dateEl.innerHTML = `Från ${job.startdate.split("T")[0]} till ${job.enddate.split("T")[0]}`;
 
         const infoEl = document.createElement("p");
-        infoEl.innerHTML = `${job.description}`;
+        infoEl.innerHTML = `Info:${job.description}`;
 
         //radera knapp
         const deleteBtn = document.createElement("a");
@@ -52,16 +53,6 @@ function displayData(data) {
         });
 
 
-        //updatera knapp
-        const updateBtn = document.createElement("a");
-        deleteBtn.href = "#"
-        deleteBtn.innerHTML = "Ändra";
-
-        updateBtn.addEventListener("click", function() {
-            event.preventDefault();
-            updateJob(job.id);
-        });
-
         jobDivEl.appendChild(companyNameEl);
         jobDivEl.appendChild(locationEl);
         jobDivEl.appendChild(dateEl);
@@ -73,7 +64,7 @@ function displayData(data) {
     })
 }
 
-//radera funktion
+
 document.addEventListener("DOMContentLoaded", function() {
     let formEl = document.getElementById("workForm");
     formEl.addEventListener("submit", formPost);
@@ -104,6 +95,8 @@ document.addEventListener("DOMContentLoaded", function() {
             if (!response.ok) {
                 throw new Error("Failed to add job");
             }
+
+            formEl.reset();
             
         } catch (error) {
             console.error("Error adding job:", error);
@@ -111,6 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+//funktion som raderar 
 async function deleteJob(jobId) {
     try {
         const response = await fetch(`/api/workers/${jobId}`, {
