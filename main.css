@@ -48,6 +48,17 @@ h1 {
     box-shadow: 6px 6px 0 0 black;
 }
 
+#data-container p {
+    font-style: italic;
+}
+
+#data-container a {
+    margin-inline: 0 !important;
+    width: 30%;
+    text-align: center;
+    margin-top: 10px;
+}
+
 .job-container {
     margin: 10px;
     background-color: #F8F8F8;
@@ -111,4 +122,17 @@ input:last-of-type {
 input:last-of-type:hover {
     background-color: #D0B0FA;
     cursor: pointer;
+}
+
+#about-container {
+    margin-inline: auto;
+    padding: 1.5rem;
+    background-color: #494D5F;
+    border-radius: 0 20px 20px 20px;
+    box-shadow: 6px 6px 0 0 black;
+    color: white;
+}
+
+#about-container p{
+    padding-bottom: 1rem;
 }
